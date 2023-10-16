@@ -1,0 +1,10 @@
+{
+  "auth": {
+    "email_hint": "Email",
+    "username_hint": "Username",
+    "password_hint": "Password",
+    "login_button": "Login",
+    "signup_button": "Sign-Up",
+    "forgot_password": "Forgot password?"
+  }
+}
