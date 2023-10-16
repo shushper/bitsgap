@@ -2,6 +2,8 @@ import 'package:bitsgap/generated/codegen_loader.g.dart';
 import 'package:bitsgap/res/images.dart';
 import 'package:bitsgap/res/text_styles.dart';
 import 'package:bitsgap/screens/auth_mode_store.dart';
+import 'package:bitsgap/screens/login_store.dart';
+import 'package:bitsgap/screens/signup_store.dart';
 import 'package:bitsgap/widgets/text_field.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -19,16 +21,18 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   final _authModeStore = AuthModeStore();
+  final _loginStore = LoginStore();
+  final _signupStore = SignUpStore();
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       backgroundColor: colorScheme.background,
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Column(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Stack(
               children: [
                 ClipPath(
                   clipper: const AuthScreenClipper(),
@@ -37,77 +41,30 @@ class _AuthScreenState extends State<AuthScreen> {
                     color: colorScheme.secondary,
                   ),
                 ),
-                const SizedBox(height: 16),
-                Column(
-                  children: [
-                    FormsSwitcher(
-                      authModeStore: _authModeStore,
-                    ),
-                    const SizedBox(height: 30),
-                    AuthModeSwitcher(
-                      authModeStore: _authModeStore,
-                    ),
-                    const SizedBox(height: 42),
-                    const ForgotPassword(),
-                  ],
-                ),
+                Positioned(
+                  left: 24,
+                  top: 54,
+                  child: SvgPicture.asset(Images.logo),
+                )
               ],
             ),
-          ),
-          Positioned(
-            left: 24,
-            top: 54,
-            child: SvgPicture.asset(Images.logo),
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class FormsSwitcher extends StatelessWidget {
-  final AuthModeStore authModeStore;
-
-  const FormsSwitcher({super.key, required this.authModeStore});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-        height: 46 * 3 + 12 * 2,
-        child: PageView(
-          controller: authModeStore.pageController,
-          physics: const NeverScrollableScrollPhysics(),
-          children: const [
-            LoginForm(),
-            SingUpForm(),
-          ],
-        ));
-  }
-}
-
-class LoginForm extends StatefulWidget {
-  const LoginForm({super.key});
-
-  @override
-  State<LoginForm> createState() => _LoginFormState();
-}
-
-class _LoginFormState extends State<LoginForm> {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Form(
-        child: Column(
-          children: [
-            const SizedBox(height: 46),
-            const SizedBox(height: 12),
-            MyTextField(
-              hintText: LocaleKeys.auth_username_hint.tr(),
-            ),
-            const SizedBox(height: 12),
-            MyTextField(
-              hintText: LocaleKeys.auth_password_hint.tr(),
+            const SizedBox(height: 16),
+            Column(
+              children: [
+                FormsSwitcher(
+                  authModeStore: _authModeStore,
+                  loginStore: _loginStore,
+                  signUpStore: _signupStore,
+                ),
+                const SizedBox(height: 30),
+                AuthModeSwitcher(
+                  authModeStore: _authModeStore,
+                  loginStore: _loginStore,
+                  signUpStore: _signupStore,
+                ),
+                const SizedBox(height: 42),
+                const ForgotPassword(),
+              ],
             ),
           ],
         ),
@@ -116,32 +73,108 @@ class _LoginFormState extends State<LoginForm> {
   }
 }
 
-class SingUpForm extends StatefulWidget {
-  const SingUpForm({super.key});
+class FormsSwitcher extends StatelessWidget {
+  final AuthModeStore authModeStore;
+  final LoginStore loginStore;
+  final SignUpStore signUpStore;
+
+  const FormsSwitcher({super.key, required this.authModeStore, required this.signUpStore, required this.loginStore});
 
   @override
-  State<SingUpForm> createState() => _SingUpFormState();
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 240,
+      child: PageView(
+        controller: authModeStore.pageController,
+        physics: const NeverScrollableScrollPhysics(),
+        children: [
+          LoginForm(
+            loginStore: loginStore,
+          ),
+          SingUpForm(
+            signUpStore: signUpStore,
+          ),
+        ],
+      ),
+    );
+  }
 }
 
-class _SingUpFormState extends State<SingUpForm> {
+class LoginForm extends StatelessWidget {
+  final LoginStore loginStore;
+
+  const LoginForm({super.key, required this.loginStore});
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Form(
+        key: const ValueKey('loginFormKey'),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            MyTextField(
-              hintText: LocaleKeys.auth_email_hint.tr(),
-            ),
+            Observer(builder: (context) {
+              return MyTextField(
+                hintText: LocaleKeys.auth_username_hint.tr(),
+                onChanged: loginStore.setUsername,
+                error: loginStore.userNameError,
+              );
+            }),
             const SizedBox(height: 12),
-            MyTextField(
-              hintText: LocaleKeys.auth_username_hint.tr(),
-            ),
+            Observer(
+              builder: (context) {
+                return MyTextField(
+                  hintText: LocaleKeys.auth_password_hint.tr(),
+                  onChanged: loginStore.setPassword,
+                  error: loginStore.passwordError,
+                );
+              },
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SingUpForm extends StatelessWidget {
+  final SignUpStore signUpStore;
+
+  const SingUpForm({super.key, required this.signUpStore});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Form(
+        key: const ValueKey('signUpFormKey'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Observer(builder: (context) {
+              return MyTextField(
+                hintText: LocaleKeys.auth_email_hint.tr(),
+                onChanged: signUpStore.setEmail,
+                error: signUpStore.emailError,
+              );
+            }),
             const SizedBox(height: 12),
-            MyTextField(
-              hintText: LocaleKeys.auth_password_hint.tr(),
-            ),
+            Observer(builder: (context) {
+              return MyTextField(
+                hintText: LocaleKeys.auth_username_hint.tr(),
+                onChanged: signUpStore.setUsername,
+                error: signUpStore.userNameError,
+              );
+            }),
+            const SizedBox(height: 12),
+            Observer(builder: (context) {
+              return MyTextField(
+                hintText: LocaleKeys.auth_password_hint.tr(),
+                onChanged: signUpStore.setPassword,
+                error: signUpStore.passwordError,
+              );
+            }),
           ],
         ),
       ),
@@ -174,8 +207,10 @@ class AuthScreenClipper extends CustomClipper<Path> {
 
 class AuthModeSwitcher extends StatelessWidget {
   final AuthModeStore authModeStore;
+  final LoginStore loginStore;
+  final SignUpStore signUpStore;
 
-  const AuthModeSwitcher({super.key, required this.authModeStore});
+  const AuthModeSwitcher({super.key, required this.authModeStore, required this.loginStore, required this.signUpStore});
 
   @override
   Widget build(BuildContext context) {
@@ -195,14 +230,26 @@ class AuthModeSwitcher extends StatelessWidget {
                 child: SwitchItem(
                   text: LocaleKeys.auth_login_button.tr(),
                   isSelected: authModeStore.authMode == AuthMode.login,
-                  onTap: () => authModeStore.setAuthMode(AuthMode.login),
+                  onTap: () {
+                    if (authModeStore.authMode == AuthMode.login) {
+                      loginStore.login();
+                    } else {
+                      authModeStore.setAuthMode(AuthMode.login);
+                    }
+                  },
                 ),
               ),
               Expanded(
                 child: SwitchItem(
                   text: LocaleKeys.auth_signup_button.tr(),
                   isSelected: authModeStore.authMode == AuthMode.signup,
-                  onTap: () => authModeStore.setAuthMode(AuthMode.signup),
+                  onTap: () {
+                    if (authModeStore.authMode == AuthMode.signup) {
+                      signUpStore.signUp();
+                    } else {
+                      authModeStore.setAuthMode(AuthMode.signup);
+                    }
+                  },
                 ),
               ),
             ],

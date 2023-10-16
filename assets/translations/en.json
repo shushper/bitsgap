@@ -6,5 +6,12 @@
     "login_button": "Login",
     "signup_button": "Sign-Up",
     "forgot_password": "Forgot password?"
+  },
+  "fields_errors": {
+    "username_required": "Username is required",
+    "email_required": "Email is required",
+    "email_invalid": "Email is invalid",
+    "password_required": "Password is required",
+    "password_min_length": "Password must be at least 6 characters long"
   }
 }
