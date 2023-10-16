@@ -12,8 +12,11 @@ class MyTextField extends StatelessWidget {
       style: MyTextStyles.body1.copyWith(color: colorScheme.onBackground),
       decoration: InputDecoration(
         hintText: hintText,
+        constraints: const BoxConstraints(
+          maxHeight: 46,
+        ),
         hintStyle: MyTextStyles.body1.copyWith(color: colorScheme.onBackground.withOpacity(0.5)),
-        contentPadding: const EdgeInsets.only(left: 16, right: 32, top: 12, bottom: 12),
+        contentPadding: const EdgeInsets.only(left: 16, right: 32),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(24),
           borderSide: BorderSide(

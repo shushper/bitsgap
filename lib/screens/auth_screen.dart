@@ -1,13 +1,24 @@
 import 'package:bitsgap/generated/codegen_loader.g.dart';
 import 'package:bitsgap/res/images.dart';
 import 'package:bitsgap/res/text_styles.dart';
+import 'package:bitsgap/screens/auth_mode_store.dart';
 import 'package:bitsgap/widgets/text_field.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class AuthScreen extends StatelessWidget {
+import 'auth_mode.dart';
+
+class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
+
+  @override
+  State<AuthScreen> createState() => _AuthScreenState();
+}
+
+class _AuthScreenState extends State<AuthScreen> {
+  final _authModeStore = AuthModeStore();
 
   @override
   Widget build(BuildContext context) {
@@ -16,40 +27,32 @@ class AuthScreen extends StatelessWidget {
       backgroundColor: colorScheme.background,
       body: Stack(
         children: [
-          Column(
-            children: [
-              ClipPath(
-                clipper: const AuthScreenClipper(),
-                child: Container(
-                  height: 257,
-                  color: colorScheme.secondary,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Form(
-                  child: Column(
-                    children: [
-                      MyTextField(
-                        hintText: LocaleKeys.auth_email_hint.tr(),
-                      ),
-                      const SizedBox(height: 12),
-                      MyTextField(
-                        hintText: LocaleKeys.auth_username_hint.tr(),
-                      ),
-                      const SizedBox(height: 12),
-                      MyTextField(
-                        hintText: LocaleKeys.auth_password_hint.tr(),
-                      ),
-                      const SizedBox(height: 30),
-                      const MySwitch(),
-                      const SizedBox(height: 42),
-                      const ForgotPassword(),
-                    ],
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                ClipPath(
+                  clipper: const AuthScreenClipper(),
+                  child: Container(
+                    height: 257,
+                    color: colorScheme.secondary,
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 16),
+                Column(
+                  children: [
+                    FormsSwitcher(
+                      authModeStore: _authModeStore,
+                    ),
+                    const SizedBox(height: 30),
+                    AuthModeSwitcher(
+                      authModeStore: _authModeStore,
+                    ),
+                    const SizedBox(height: 42),
+                    const ForgotPassword(),
+                  ],
+                ),
+              ],
+            ),
           ),
           Positioned(
             left: 24,
@@ -57,6 +60,90 @@ class AuthScreen extends StatelessWidget {
             child: SvgPicture.asset(Images.logo),
           )
         ],
+      ),
+    );
+  }
+}
+
+class FormsSwitcher extends StatelessWidget {
+  final AuthModeStore authModeStore;
+
+  const FormsSwitcher({super.key, required this.authModeStore});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+        height: 46 * 3 + 12 * 2,
+        child: PageView(
+          controller: authModeStore.pageController,
+          physics: const NeverScrollableScrollPhysics(),
+          children: const [
+            LoginForm(),
+            SingUpForm(),
+          ],
+        ));
+  }
+}
+
+class LoginForm extends StatefulWidget {
+  const LoginForm({super.key});
+
+  @override
+  State<LoginForm> createState() => _LoginFormState();
+}
+
+class _LoginFormState extends State<LoginForm> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Form(
+        child: Column(
+          children: [
+            const SizedBox(height: 46),
+            const SizedBox(height: 12),
+            MyTextField(
+              hintText: LocaleKeys.auth_username_hint.tr(),
+            ),
+            const SizedBox(height: 12),
+            MyTextField(
+              hintText: LocaleKeys.auth_password_hint.tr(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SingUpForm extends StatefulWidget {
+  const SingUpForm({super.key});
+
+  @override
+  State<SingUpForm> createState() => _SingUpFormState();
+}
+
+class _SingUpFormState extends State<SingUpForm> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Form(
+        child: Column(
+          children: [
+            MyTextField(
+              hintText: LocaleKeys.auth_email_hint.tr(),
+            ),
+            const SizedBox(height: 12),
+            MyTextField(
+              hintText: LocaleKeys.auth_username_hint.tr(),
+            ),
+            const SizedBox(height: 12),
+            MyTextField(
+              hintText: LocaleKeys.auth_password_hint.tr(),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -85,33 +172,42 @@ class AuthScreenClipper extends CustomClipper<Path> {
   bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
 }
 
-class MySwitch extends StatelessWidget {
-  const MySwitch({super.key});
+class AuthModeSwitcher extends StatelessWidget {
+  final AuthModeStore authModeStore;
+
+  const AuthModeSwitcher({super.key, required this.authModeStore});
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return Container(
       height: 40,
+      margin: const EdgeInsets.symmetric(horizontal: 24),
       decoration: BoxDecoration(
         color: colorScheme.secondary,
         borderRadius: BorderRadius.circular(24),
       ),
-      child: Row(
-        children: [
-          Expanded(
-            child: SwitchItem(
-              text: LocaleKeys.auth_login_button.tr(),
-              isSelected: true,
-            ),
-          ),
-          Expanded(
-            child: SwitchItem(
-              text: LocaleKeys.auth_signup_button.tr(),
-              isSelected: false,
-            ),
-          ),
-        ],
+      child: Observer(
+        builder: (BuildContext context) {
+          return Row(
+            children: [
+              Expanded(
+                child: SwitchItem(
+                  text: LocaleKeys.auth_login_button.tr(),
+                  isSelected: authModeStore.authMode == AuthMode.login,
+                  onTap: () => authModeStore.setAuthMode(AuthMode.login),
+                ),
+              ),
+              Expanded(
+                child: SwitchItem(
+                  text: LocaleKeys.auth_signup_button.tr(),
+                  isSelected: authModeStore.authMode == AuthMode.signup,
+                  onTap: () => authModeStore.setAuthMode(AuthMode.signup),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -120,26 +216,30 @@ class MySwitch extends StatelessWidget {
 class SwitchItem extends StatelessWidget {
   final String text;
   final bool isSelected;
+  final void Function() onTap;
 
-  const SwitchItem({super.key, required this.text, required this.isSelected});
+  const SwitchItem({super.key, required this.text, required this.isSelected, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textColor = isSelected ? colorScheme.onPrimary : colorScheme.onSecondary;
-    return Container(
-      height: 40,
-      decoration: isSelected
-          ? BoxDecoration(
-              color: colorScheme.primary,
-              borderRadius: BorderRadius.circular(24),
-            )
-          : null,
-      child: Center(
-        child: Text(
-          text,
-          style: MyTextStyles.button.copyWith(color: textColor),
-          textAlign: TextAlign.center,
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: AnimatedContainer(
+        height: 40,
+        decoration: BoxDecoration(
+          color: isSelected ? colorScheme.primary : Colors.transparent,
+          borderRadius: BorderRadius.circular(24),
+        ),
+        duration: const Duration(milliseconds: 200),
+        child: Center(
+          child: Text(
+            text,
+            style: MyTextStyles.button.copyWith(color: textColor),
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
     );
@@ -152,7 +252,7 @@ class ForgotPassword extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final brightness =Theme.of(context).brightness;
+    final brightness = Theme.of(context).brightness;
     final textColor = brightness == Brightness.light ? colorScheme.primary : colorScheme.onPrimary;
 
     return TextButton(
