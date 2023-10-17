@@ -43,4 +43,5 @@ class _App extends StatelessWidget {
       home: const AuthScreen(),
     );
   }
+
 }

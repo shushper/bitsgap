@@ -7,8 +7,9 @@ class LoginStore = LoginStoreBase with _$LoginStore;
 
 abstract class LoginStoreBase with Store {
 
-  //should be injected
-  final validator = Validator();
+  final Validator validator;
+
+  LoginStoreBase(this.validator);
 
   @observable
   String username = '';

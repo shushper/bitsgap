@@ -1,3 +1,4 @@
+import 'package:bitsgap/app/injectable.dart';
 import 'package:bitsgap/generated/codegen_loader.g.dart';
 import 'package:bitsgap/res/images.dart';
 import 'package:bitsgap/res/text_styles.dart';
@@ -21,8 +22,8 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   final _authModeStore = AuthModeStore();
-  final _loginStore = LoginStore();
-  final _signupStore = SignUpStore();
+  final _loginStore = getIt.get<LoginStore>();
+  final _signupStore = getIt.get<SignUpStore>();
 
   @override
   Widget build(BuildContext context) {

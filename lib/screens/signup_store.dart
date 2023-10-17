@@ -6,9 +6,9 @@ part 'signup_store.g.dart';
 class SignUpStore = SignUpStoreBase with _$SignUpStore;
 
 abstract class SignUpStoreBase with Store {
+  final Validator validator;
 
-  //should be injected
-  final validator = Validator();
+  SignUpStoreBase(this.validator);
 
   @observable
   String email = '';
