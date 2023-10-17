@@ -1,4 +1,5 @@
 import 'package:bitsgap/app/app_navigator.dart';
+import 'package:bitsgap/app/app_routes.dart';
 import 'package:bitsgap/repositories/auth_repository.dart';
 import 'package:mobx/mobx.dart';
 
@@ -14,6 +15,7 @@ abstract class HomeStoreBase with Store {
 
   @action
   Future<void> logout() async {
-
+    await authRepository.setAuthorized(false);
+    appNavigator.pushNamedAndRemoveUntil(AppRoutes.auth, (route) => false);
   }
 }

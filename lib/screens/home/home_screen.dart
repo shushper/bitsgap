@@ -30,7 +30,12 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(
                 height: 12,
               ),
-              FilledButton(onPressed: () {}, child: const Text('Log out')),
+              FilledButton(
+                child: const Text('Log out'),
+                onPressed: () {
+                  _homeStore.logout();
+                },
+              ),
             ],
           ),
         ),

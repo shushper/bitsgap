@@ -2,7 +2,6 @@ import 'package:bitsgap/app/app_navigator.dart';
 import 'package:bitsgap/app/app_routes.dart';
 import 'package:bitsgap/app/injectable.dart';
 import 'package:bitsgap/res/color_schemes.dart';
-import 'package:bitsgap/screens/auth/auth_screen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
@@ -43,7 +42,7 @@ class _App extends StatelessWidget {
         useMaterial3: true,
         brightness: Brightness.dark,
       ),
-      home: const AuthScreen(),
+      initialRoute: getIt.get<String>(instanceName: 'initialRoute'),
       onGenerateRoute: (RouteSettings rs) {
         return AppRoutes.generateRoute(rs);
       },
