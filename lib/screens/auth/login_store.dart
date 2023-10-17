@@ -2,6 +2,7 @@ import 'package:bitsgap/app/app_navigator.dart';
 import 'package:bitsgap/app/app_routes.dart';
 import 'package:bitsgap/repositories/auth_repository.dart';
 import 'package:bitsgap/screens/flushbar/flushbar_factory.dart';
+import 'package:bitsgap/screens/flushbar/flushbar_route.dart';
 import 'package:bitsgap/utils/validator.dart';
 import 'package:mobx/mobx.dart';
 
@@ -10,7 +11,6 @@ part 'login_store.g.dart';
 class LoginStore = LoginStoreBase with _$LoginStore;
 
 abstract class LoginStoreBase with Store {
-
   final Validator validator;
   final AuthRepository authRepository;
   final AppNavigator appNavigator;
@@ -66,8 +66,8 @@ abstract class LoginStoreBase with Store {
         break;
       case LoginResult.wrongPassword:
         appNavigator.pushNamed(
-            AppRoutes.flushbar,
-            arguments: FlushbarFactory.wrongPassword(),
+          AppRoutes.flushbar,
+          arguments: FlushbarFactory.wrongPassword(),
         );
         break;
       case LoginResult.userLoggedIn:
@@ -75,6 +75,9 @@ abstract class LoginStoreBase with Store {
           AppRoutes.flushbar,
           arguments: FlushbarFactory.userLoggedIn(),
         );
+        await Future.delayed(kFlushbarDuration);
+        await authRepository.setAuthorized(true);
+        appNavigator.pushNamedAndRemoveUntil(AppRoutes.home, (route) => false);
         break;
     }
   }

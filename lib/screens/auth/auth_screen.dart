@@ -21,7 +21,7 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
-  final _authModeStore = AuthModeStore();
+  final _authModeStore = getIt.get<AuthModeStore>();
   final _loginStore = getIt.get<LoginStore>();
   final _signupStore = getIt.get<SignUpStore>();
 

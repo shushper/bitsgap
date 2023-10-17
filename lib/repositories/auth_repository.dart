@@ -1,11 +1,20 @@
 import 'package:bitsgap/data/database/database.dart';
+import 'package:bitsgap/data/prefs/prefs.dart';
 import 'package:bitsgap/models/user.dart';
 
 class AuthRepository {
-
   final Database _database;
+  final Prefs _prefs;
 
-  AuthRepository(this._database);
+  AuthRepository(this._database, this._prefs);
+
+  Future<bool> isAuthorized() async {
+    return _prefs.isAuthorized();
+  }
+
+  Future<bool> setAuthorized(bool authorized) async {
+    return _prefs.setAuthorized(authorized);
+  }
 
   Future<LoginResult> loginUser(String username, String password) async {
     final userWithUsername = await _database.getUserByUsername(username);
@@ -21,7 +30,6 @@ class AuthRepository {
   }
 
   Future<RegisterResult> registerUser(String email, String username, String password) async {
-
     final userWithEmail = await _database.getUserByEmail(email);
     if (userWithEmail != null) {
       return RegisterResult.userWithEmailAlreadyExists;
@@ -40,13 +48,13 @@ class AuthRepository {
   }
 }
 
-enum LoginResult{
+enum LoginResult {
   userNotFound,
   wrongPassword,
   userLoggedIn,
 }
 
-enum RegisterResult{
+enum RegisterResult {
   userWithEmailAlreadyExists,
   userWithUsernameAlreadyExists,
   userRegistered,

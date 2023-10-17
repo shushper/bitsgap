@@ -2,6 +2,7 @@ import 'package:bitsgap/app/app_navigator.dart';
 import 'package:bitsgap/app/app_routes.dart';
 import 'package:bitsgap/repositories/auth_repository.dart';
 import 'package:bitsgap/screens/flushbar/flushbar_factory.dart';
+import 'package:bitsgap/screens/flushbar/flushbar_route.dart';
 import 'package:bitsgap/utils/validator.dart';
 import 'package:mobx/mobx.dart';
 
@@ -96,6 +97,9 @@ abstract class SignUpStoreBase with Store {
           AppRoutes.flushbar,
           arguments: FlushbarFactory.userRegistered(),
         );
+        await Future.delayed(kFlushbarDuration);
+        await authRepository.setAuthorized(true);
+        appNavigator.pushNamedAndRemoveUntil(AppRoutes.home, (route) => false);
         break;
     }
   }
