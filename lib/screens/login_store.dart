@@ -1,5 +1,4 @@
-import 'package:bitsgap/generated/codegen_loader.g.dart';
-import 'package:easy_localization/easy_localization.dart';
+import 'package:bitsgap/utils/validator.dart';
 import 'package:mobx/mobx.dart';
 
 part 'login_store.g.dart';
@@ -7,6 +6,10 @@ part 'login_store.g.dart';
 class LoginStore = LoginStoreBase with _$LoginStore;
 
 abstract class LoginStoreBase with Store {
+
+  //should be injected
+  final validator = Validator();
+
   @observable
   String username = '';
 
@@ -33,21 +36,16 @@ abstract class LoginStoreBase with Store {
 
   @action
   Future<void> login() async {
-    if (username.isEmpty) {
-      userNameError = LocaleKeys.fields_errors_username_required.tr();
+    final userNameError = validator.validateUserName(username);
+    if (userNameError != null) {
+      this.userNameError = userNameError;
       return;
-    } else {
-      userNameError = null;
     }
 
-    if (password.isEmpty) {
-      passwordError = LocaleKeys.fields_errors_password_required.tr();
+    final passwordError = validator.validatePassword(password);
+    if (passwordError != null) {
+      this.passwordError = passwordError;
       return;
-    } else if (password.length < 6) {
-      passwordError = LocaleKeys.fields_errors_password_min_length.tr();
-      return;
-    } else {
-      passwordError = null;
     }
   }
 }

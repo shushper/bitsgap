@@ -10,6 +10,7 @@ environment:
 
 dependencies:
   easy_localization: ^3.0.3
+  email_validator: ^2.1.17
   flutter:
     sdk: flutter
   flutter_mobx: ^2.1.0

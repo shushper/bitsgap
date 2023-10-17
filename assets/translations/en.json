@@ -9,9 +9,10 @@
   },
   "fields_errors": {
     "username_required": "Username is required",
+    "username_min_length": "Username must be at least {} characters long",
     "email_required": "Email is required",
     "email_invalid": "Email is invalid",
     "password_required": "Password is required",
-    "password_min_length": "Password must be at least 6 characters long"
+    "password_min_length": "Password must be at least {} characters long"
   }
 }
