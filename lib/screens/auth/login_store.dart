@@ -1,4 +1,7 @@
+import 'package:bitsgap/app/app_navigator.dart';
+import 'package:bitsgap/app/app_routes.dart';
 import 'package:bitsgap/repositories/auth_repository.dart';
+import 'package:bitsgap/screens/flushbar/flushbar_factory.dart';
 import 'package:bitsgap/utils/validator.dart';
 import 'package:mobx/mobx.dart';
 
@@ -10,8 +13,9 @@ abstract class LoginStoreBase with Store {
 
   final Validator validator;
   final AuthRepository authRepository;
+  final AppNavigator appNavigator;
 
-  LoginStoreBase(this.validator, this.authRepository);
+  LoginStoreBase(this.validator, this.authRepository, this.appNavigator);
 
   @observable
   String username = '';
@@ -55,13 +59,22 @@ abstract class LoginStoreBase with Store {
 
     switch (result) {
       case LoginResult.userNotFound:
-        print('User not found');
+        appNavigator.pushNamed(
+          AppRoutes.flushbar,
+          arguments: FlushbarFactory.userNotFound(),
+        );
         break;
       case LoginResult.wrongPassword:
-        print('Wrong password');
+        appNavigator.pushNamed(
+            AppRoutes.flushbar,
+            arguments: FlushbarFactory.wrongPassword(),
+        );
         break;
       case LoginResult.userLoggedIn:
-        print('User logged in');
+        appNavigator.pushNamed(
+          AppRoutes.flushbar,
+          arguments: FlushbarFactory.userLoggedIn(),
+        );
         break;
     }
   }

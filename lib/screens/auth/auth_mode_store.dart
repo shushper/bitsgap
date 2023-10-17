@@ -1,4 +1,4 @@
-import 'package:bitsgap/screens/auth_mode.dart';
+import 'package:bitsgap/screens/auth/auth_mode.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:mobx/mobx.dart';
 

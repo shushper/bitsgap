@@ -1,10 +1,10 @@
 import 'package:bitsgap/app/injectable.dart';
 import 'package:bitsgap/generated/codegen_loader.g.dart';
-import 'package:bitsgap/res/images.dart';
+import 'package:bitsgap/res/icons.dart';
 import 'package:bitsgap/res/text_styles.dart';
-import 'package:bitsgap/screens/auth_mode_store.dart';
-import 'package:bitsgap/screens/login_store.dart';
-import 'package:bitsgap/screens/signup_store.dart';
+import 'package:bitsgap/screens/auth/auth_mode_store.dart';
+import 'package:bitsgap/screens/auth/login_store.dart';
+import 'package:bitsgap/screens/auth/signup_store.dart';
 import 'package:bitsgap/widgets/text_field.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +45,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 Positioned(
                   left: 24,
                   top: 54,
-                  child: SvgPicture.asset(Images.logo),
+                  child: SvgPicture.asset(MyIcons.logo),
                 )
               ],
             ),

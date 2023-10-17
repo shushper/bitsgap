@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+const successColor = Color(0xFF00B37E);
+const errorColor = Color(0xFFE12E0D);
+const onFlushbarColor = Color(0xFFFFFFFF);
+
 const lightColorScheme = ColorScheme(
   brightness: Brightness.light,
   primary: Color(0xFF4A55A7),

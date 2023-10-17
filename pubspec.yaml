@@ -9,6 +9,7 @@ environment:
 
 
 dependencies:
+  another_flushbar: ^1.12.30
   easy_localization: ^3.0.3
   email_validator: ^2.1.17
   flutter:
@@ -34,7 +35,7 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/
+    - assets/icons/
     - assets/translations/
 
   fonts:

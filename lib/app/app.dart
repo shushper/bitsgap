@@ -1,8 +1,10 @@
+import 'package:bitsgap/app/app_navigator.dart';
+import 'package:bitsgap/app/app_routes.dart';
+import 'package:bitsgap/app/injectable.dart';
 import 'package:bitsgap/res/color_schemes.dart';
-import 'package:bitsgap/screens/auth_screen.dart';
+import 'package:bitsgap/screens/auth/auth_screen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -27,6 +29,7 @@ class _App extends StatelessWidget {
       title: 'Flutter Demo',
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
+      navigatorKey: getIt.get<AppNavigator>().navigatorKey,
       themeMode: ThemeMode.dark,
       theme: ThemeData(
         fontFamily: 'TT-Norms-Pro-Trial',
@@ -41,7 +44,9 @@ class _App extends StatelessWidget {
         brightness: Brightness.dark,
       ),
       home: const AuthScreen(),
+      onGenerateRoute: (RouteSettings rs) {
+        return AppRoutes.generateRoute(rs);
+      },
     );
   }
-
 }

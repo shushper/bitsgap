@@ -1,4 +1,7 @@
+import 'package:bitsgap/app/app_navigator.dart';
+import 'package:bitsgap/app/app_routes.dart';
 import 'package:bitsgap/repositories/auth_repository.dart';
+import 'package:bitsgap/screens/flushbar/flushbar_factory.dart';
 import 'package:bitsgap/utils/validator.dart';
 import 'package:mobx/mobx.dart';
 
@@ -9,8 +12,9 @@ class SignUpStore = SignUpStoreBase with _$SignUpStore;
 abstract class SignUpStoreBase with Store {
   final Validator validator;
   final AuthRepository authRepository;
+  final AppNavigator appNavigator;
 
-  SignUpStoreBase(this.validator, this.authRepository);
+  SignUpStoreBase(this.validator, this.authRepository, this.appNavigator);
 
   @observable
   String email = '';
@@ -68,17 +72,30 @@ abstract class SignUpStoreBase with Store {
       return;
     }
 
+    await _registerUser();
+  }
+
+  Future<void> _registerUser() async {
     final result = await authRepository.registerUser(email, username, password);
 
     switch (result) {
-      case RegisterResult.userRegistered:
-        print('User registered');
-        break;
       case RegisterResult.userWithEmailAlreadyExists:
-        print('User with email $email already exists');
+        appNavigator.pushNamed(
+          AppRoutes.flushbar,
+          arguments: FlushbarFactory.userWithEmailExists(email),
+        );
         break;
       case RegisterResult.userWithUsernameAlreadyExists:
-        print('User with username $username already exists');
+        appNavigator.pushNamed(
+          AppRoutes.flushbar,
+          arguments: FlushbarFactory.userWithUsernameExists(username),
+        );
+        break;
+      case RegisterResult.userRegistered:
+        appNavigator.pushNamed(
+          AppRoutes.flushbar,
+          arguments: FlushbarFactory.userRegistered(),
+        );
         break;
     }
   }

@@ -14,5 +14,15 @@
     "email_invalid": "Email is invalid",
     "password_required": "Password is required",
     "password_min_length": "Password must be at least {} characters long"
+  },
+  "flushbar": {
+    "success_title": "Well done!",
+    "error_title": "Error!",
+    "user_registered": "User registered successfully",
+    "user_with_email_exists": "User with email {} already exists",
+    "user_with_username_exists": "User with username {} already exists",
+    "user_not_found": "User not found",
+    "wrong_password": "Wrong password",
+    "user_logged_in": "User logged in successfully"
   }
 }
