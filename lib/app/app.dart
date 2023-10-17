@@ -29,7 +29,7 @@ class _App extends StatelessWidget {
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       navigatorKey: getIt.get<AppNavigator>().navigatorKey,
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.system,
       theme: ThemeData(
         fontFamily: 'TT-Norms-Pro-Trial',
         colorScheme: lightColorScheme,
