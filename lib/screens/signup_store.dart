@@ -1,3 +1,4 @@
+import 'package:bitsgap/repositories/auth_repository.dart';
 import 'package:bitsgap/utils/validator.dart';
 import 'package:mobx/mobx.dart';
 
@@ -7,8 +8,9 @@ class SignUpStore = SignUpStoreBase with _$SignUpStore;
 
 abstract class SignUpStoreBase with Store {
   final Validator validator;
+  final AuthRepository authRepository;
 
-  SignUpStoreBase(this.validator);
+  SignUpStoreBase(this.validator, this.authRepository);
 
   @observable
   String email = '';
@@ -65,5 +67,7 @@ abstract class SignUpStoreBase with Store {
       this.passwordError = passwordError;
       return;
     }
+
+    await authRepository.registerUser(email, username, password);
   }
 }

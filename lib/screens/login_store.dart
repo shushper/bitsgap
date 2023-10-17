@@ -1,3 +1,4 @@
+import 'package:bitsgap/repositories/auth_repository.dart';
 import 'package:bitsgap/utils/validator.dart';
 import 'package:mobx/mobx.dart';
 
@@ -8,8 +9,9 @@ class LoginStore = LoginStoreBase with _$LoginStore;
 abstract class LoginStoreBase with Store {
 
   final Validator validator;
+  final AuthRepository authRepository;
 
-  LoginStoreBase(this.validator);
+  LoginStoreBase(this.validator, this.authRepository);
 
   @observable
   String username = '';

@@ -9,6 +9,12 @@ final getIt = GetIt.instance;
 void configureDependencies() {
   getIt.registerSingleton<Validator>(Validator());
   getIt.registerSingleton<AuthRepository>(AuthRepository());
-  getIt.registerFactory<LoginStore>(() => LoginStore(getIt.get<Validator>()));
-  getIt.registerFactory<SignUpStore>(() => SignUpStore(getIt.get<Validator>()));
+  getIt.registerFactory<LoginStore>(() => LoginStore(
+        getIt.get<Validator>(),
+        getIt.get<AuthRepository>(),
+      ));
+  getIt.registerFactory<SignUpStore>(() => SignUpStore(
+        getIt.get<Validator>(),
+        getIt.get<AuthRepository>(),
+      ));
 }
