@@ -50,5 +50,19 @@ abstract class LoginStoreBase with Store {
       this.passwordError = passwordError;
       return;
     }
+
+    final result = await authRepository.loginUser(username, password);
+
+    switch (result) {
+      case LoginResult.userNotFound:
+        print('User not found');
+        break;
+      case LoginResult.wrongPassword:
+        print('Wrong password');
+        break;
+      case LoginResult.userLoggedIn:
+        print('User logged in');
+        break;
+    }
   }
 }

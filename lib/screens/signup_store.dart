@@ -68,6 +68,18 @@ abstract class SignUpStoreBase with Store {
       return;
     }
 
-    await authRepository.registerUser(email, username, password);
+    final result = await authRepository.registerUser(email, username, password);
+
+    switch (result) {
+      case RegisterResult.userRegistered:
+        print('User registered');
+        break;
+      case RegisterResult.userWithEmailAlreadyExists:
+        print('User with email $email already exists');
+        break;
+      case RegisterResult.userWithUsernameAlreadyExists:
+        print('User with username $username already exists');
+        break;
+    }
   }
 }
